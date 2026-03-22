@@ -81,35 +81,33 @@ Prompt Mirror は [Claude Code Skill](https://docs.anthropic.com/en/docs/claude-
 > AIモデルは「同時に超優秀な博士課程の学生であり10歳児でもある」(Andrej Karpathy)。
 > 人間のプロンプト能力も同じようにジャギッド（凸凹）。この機能は taught.jsonl の蓄積から、あなた個人の強み/弱みマップを自動構築します。
 
-### 実例: 作者のマップ（3日間・56プロンプトから生成）
+### 実例: 作者のマップ（7日間・119プロンプト・7レッスンから生成）
 
 ```
 Strong (自信を持って正確にプロンプトできている領域)
-├── マルチエージェントオーケストレーション
-│   Cockpit master → Codex adversarial review → plan review → 実装
-│   という高度な委任チェーンを一貫して正確に指示している
-├── アーキテクチャ委任
-│   voice-inbox-daemon v0.0.2の仕様書、newssense v4のスキーマ設計など
-│   制約条件・スコープ・期待する成果物を明確に指定できている
-└── レビュー/QAワークフロー
-    「codex review challenge して修正してから実装をデリゲートして」
-    レビュー→修正→実装の順序を自然に組み立てている
+└── ツール活用
+    OAuth認証、CLI操作、Electron/CDP自動化、cron設定、複数AIプロバイダ使い分け
+    7日間で概念ギャップがほぼ検出されなかった領域
 
 Weak (レッスンが集中した領域)
-├── 暗黙の参照 (2 lessons)
-│   「なんかズレてるかもです」「1, 2, 3, 4を投稿したい」
-│   文脈や対象を省略しがち。AIには「何が」ズレているか分からない
-├── データ/時間の概念 (2 lessons)
-│   event time vs processing time の混同、precision vs recall の直感的探索
-│   データ処理の基礎概念にギャップがある
-└── セキュリティ意識 (1 lesson)
-    API秘密情報をプロンプトに直書き → セッションログに永久記録
+├── 信頼性設計 (1 lesson)
+│   同一プロンプトを5-6回リトライ
+│   失敗が一時的か構造的かの判断が弱い (transient vs persistent failure)
+└── 仕様伝達 (1 lesson)
+    暗黙の参照パターンが持続的に出現
+    「なんかズレてる」系の曖昧指示が改善途上
 
 Improving (レッスン後に行動変化が確認された領域)
-└── セキュリティ意識
-    secrets managementレッスン後、.envファイル経由の指示に切り替えた
+├── システム設計 (2 lessons)
+│   セッション共有→ハンドオフ文書 (shared state vs message passing)
+│   拡張ポイントの識別 (extension points vs core modification)
+│   直感は正しく、議論後に概念を獲得するパターン
+└── データ概念 (3 lessons)
+    precision/recall、event/processing time、batch/stream
+    7日で3概念に遭遇し、試行錯誤→体得のサイクルが回っている
 
-Stats: 3 lessons | 0 "no lesson" days | Trend: 初期データ収集中
+Stats: 7 lessons | 0 "no lesson" days
+Trend: データ概念の学習速度が最も速い。信頼性設計が最大のギャップ — 次のフォーカスポイント
 ```
 
 7日分以上のデータが溜まると、週次でジャーナルにマップが自動追記されます。
