@@ -1,0 +1,9 @@
+{
+  "journal_dir": "~/Documents/Journal",
+  "projects_dir": "~/.claude/projects",
+  "codex_dir": "~/.codex",
+  "timezone": "Asia/Tokyo",
+  "hour_cutoff": 6,
+  "max_prompts_per_session": 20,
+  "min_prompt_length": 30
+}
