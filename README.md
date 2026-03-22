@@ -156,9 +156,9 @@ Claude Code で:
 
 このスキルは毎朝の自動実行を前提に設計されています。以下のいずれかで設定:
 
-**Claude Desktop — Projects（推奨）**
+**Claude Code デスクトップアプリ（推奨）**
 
-Claude Desktop の Projects 機能でこのスキルを追加し、日次スケジュールを設定。Claude Desktop の組み込みスケジューリングで毎朝自動実行されます。
+Claude Code のデスクトップアプリでスキルをインストールし、定期実行を設定するだけです。
 
 **[AGI Cockpit](https://chatgpt-lab.com/n/nd2e5ef201888) autorun**
 
