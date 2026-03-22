@@ -162,20 +162,18 @@ Claude Code で:
 
 Claude Desktop の Projects 機能でこのスキルを追加し、日次スケジュールを設定。Claude Desktop の組み込みスケジューリングで毎朝自動実行されます。
 
-**AGI Cockpit autorun**
-```bash
-./cockpit autorun create \
-  --name "Prompt Mirror" \
-  --instruction "prompt-mirror スキルを実行してください" \
-  --type cron \
-  --expression "0 7 * * *" \
-  --directory master
-```
+**[AGI Cockpit](https://chatgpt-lab.com/n/nd2e5ef201888) autorun**
+
+AGI Cockpit を使っている場合、Master エージェントに以下のように指示するだけです:
+
+> 「prompt-mirror スキルを毎朝5時に実行するようにautorunを設定して」
+
+Master エージェントが `./cockpit autorun create` を実行してスケジュールを設定します。
 
 **Cron + Claude Code CLI**
 ```bash
 # crontab -e
-0 7 * * * cd ~/your-project && claude -p "/prompt-mirror"
+0 5 * * * cd ~/your-project && claude -p "/prompt-mirror"
 ```
 
 朝に実行する理由 — Prompt Mirror は*昨日*のプロンプトを読むので、今日の作業を始める前にレッスンを受けると、その日のプロンプティングに活かせます。
