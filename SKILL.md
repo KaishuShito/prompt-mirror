@@ -62,3 +62,49 @@ On each run, read this log to:
 - Avoid teaching the same topic twice
 - Track which categories are most frequent
 - Spot progression (are the concepts getting more advanced over time?)
+
+## Jaggedness Map
+
+Inspired by Andrej Karpathy's observation that AI models are "simultaneously a brilliant PhD student and a 10-year-old" — humans have the same jaggedness in their prompt capabilities. This feature builds a personal strength/weakness map over time.
+
+### How it works
+
+After 7+ entries in `data/taught.jsonl`, generate or update `data/jaggedness-map.json`:
+
+```json
+{
+  "updated": "YYYY-MM-DD",
+  "total_lessons": 12,
+  "strong": [
+    {"area": "Architecture delegation", "evidence": "Consistently clear system design prompts"},
+    {"area": "Requirements definition", "evidence": "Scope and constraints well-specified"}
+  ],
+  "weak": [
+    {"area": "Implicit references", "evidence": "3 lessons on ambiguity patterns"},
+    {"area": "Data pipeline concepts", "evidence": "Confused event time vs processing time, precision vs recall"}
+  ],
+  "improving": [
+    {"area": "Security awareness", "evidence": "Secrets management lesson led to behavior change"}
+  ],
+  "no_lesson_days": 6,
+  "no_lesson_trend": "increasing — prompt quality improving"
+}
+```
+
+### When to generate
+
+- **Weekly**: After 7+ taught.jsonl entries, append a `## Prompt Mirror — Jaggedness Map` section to the weekly journal entry
+- **On demand**: When the user asks "show my prompt map" or "jaggedness map"
+
+### Analysis sources
+
+1. `data/taught.jsonl` — What concepts were taught (= weak areas that needed teaching)
+2. Prompt extraction — What areas the user prompts confidently in (= strong areas)
+3. "No lesson" days — Increasing trend = overall improvement
+
+### Map rules
+
+- **Strong** = areas where prompts are consistently clear, specific, and technically accurate. No lessons needed
+- **Weak** = areas where multiple lessons clustered. 2+ lessons in same domain = pattern
+- **Improving** = areas where a lesson was taught AND subsequent prompts show the concept being applied correctly
+- Don't fabricate strengths. Only mark "strong" if there's positive evidence from prompt patterns

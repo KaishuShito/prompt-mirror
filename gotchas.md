@@ -20,6 +20,13 @@
 - **Check engineer_term against taught.jsonl** — Don't re-teach the same technical term. But related concepts are OK (e.g., after teaching mtime, teaching created_at vs last_accessed is fine)
 - **Increase concept depth over time** — Start with basics like "stateless vs stateful". As the log grows, progress to "event-driven vs polling". Use taught.jsonl entry count as a guide
 
+## Jaggedness Map
+
+- **7件未満ではマップを生成しない** — データ不足で偏った結論になる。「まだデータ収集中」と伝える
+- **「弱い」は侮辱ではない** — 「この領域で学びが多かった」というニュートラルな表現を使う。ユーザーのモチベーションを下げない
+- **強みの過信に注意** — プロンプトが少ないだけで「強い」と判定しない。十分なサンプル数がある領域のみ判定する
+- **改善の検出は保守的に** — 「レッスン後に行動が変わった」と言い切るには、レッスン前後のプロンプト比較が必要。推測で「改善」と言わない
+
 ## Edge Cases
 
 - **"Nothing found" is a valid answer** — Don't force a lesson. "No lesson today" is fine
