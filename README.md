@@ -2,49 +2,127 @@
 
 ![banner](banner.png)
 
-**Your prompts are a mirror.** They reveal which technical concepts you understand intuitively — and which ones have gaps.
+**プロンプトは鏡。** あなたが直感的に理解している技術概念と、まだギャップがある概念を映し出す。
 
-Prompt Mirror is a [Claude Code Skill](https://docs.anthropic.com/en/docs/claude-code/skills) that reads your previous day's session prompts, identifies one concept gap, and delivers a morning lesson: everyday analogy first, engineer vocabulary second.
+Prompt Mirror は [Claude Code Skill](https://docs.anthropic.com/en/docs/claude-code/skills) です。前日のセッションプロンプトを読み、概念ギャップを1つ見つけ、朝のレッスンとして届けます。日常のアナロジーが先、エンジニア用語は後。
 
-Built for non-engineers who work with AI daily — founders, PMs, designers, operators — anyone who wants to speak the same language as their engineering team without writing a single line of code.
+**コードを書かない人のためのスキル** — 創業者、PM、デザイナー、オペレーター。AIを毎日使うけどコードは書かない。でもエンジニアと同じ言葉で話したい。そういう人のために作りました。
 
-## What It Does
+## やること
 
-Every morning, Prompt Mirror:
+毎朝、Prompt Mirror は:
 
-1. **Extracts** your prompts from the previous day's Claude Code sessions
-2. **Analyzes** them for concept gaps — technical terms used inaccurately, related concepts confused, or moments where you couldn't judge AI output quality
-3. **Selects** the single highest-impact concept (never more than one)
-4. **Delivers** a lesson to your journal: what happened → everyday analogy → engineer term → why it matters → action item
+1. **抽出** — 前日の Claude Code セッションからプロンプトを収集
+2. **分析** — 概念ギャップを探す（技術用語の不正確な使用、関連概念の混同、AIの出力品質を判断できなかった瞬間）
+3. **選定** — 最もインパクトの高い1概念を選ぶ（1日1つだけ）
+4. **配信** — ジャーナルにレッスンを追記: 昨日の出来事 → 日常例 → エンジニア用語 → なぜ得か → アクション
 
-## Example Output
+## 実際のレッスン例
 
-> ### Settings vs Secrets Are Not the Same Thing
+### Day 1: Precision vs Recall
+
+> ### 検索結果を絞り込むとき「精度」と「網羅性」はシーソーの関係になる
 >
-> **What happened yesterday:**
-> You pasted a CLIENT_ID and CLIENT_SECRET directly into a prompt for X API auth. These values are now permanently stored in plaintext in your session logs.
+> **昨日あったこと**:
+> newssenseのニューススキャンで、最初は `--limit 15 --since 24h` で広く取り、次に `--limit 10 --since 12h` で絞り、最終的に `--limit 50 --since 12h` で量を増やしつつ厳しいスコアリング基準を追加した。パラメータを4回調整して、ちょうどいいバランスを探していた。
 >
-> **In everyday terms:**
-> Your home address is fine to share. But writing your door key's PIN on a note taped to your mailbox lets anyone walk in. Settings have "OK to see" and "dangerous to see" categories too.
+> **日常例で言うと**:
+> Amazonで「ワイヤレスイヤホン」を検索すると1万件出る。「ノイキャン 1万円以下」に絞ると50件になるけど、「ノイキャン」と書いていないだけで実は付いてる良い商品を見逃す。逆に広すぎると全部見きれない。この「絞る↔広げる」のジレンマは、検索やデータ収集では常に起きる。
 >
-> **Engineers call this:**
-> Secrets management. CLIENT_ID is semi-public (like an address), CLIENT_SECRET is a secret (like a key). Engineers store secrets in Keychain, Vault, or .env files (gitignored) — never in logs or chat history.
+> **エンジニアはこう呼ぶ**:
+> **Precision vs Recall（適合率 vs 再現率）** — Precision = 返された結果のうち本当に欲しいものの割合。Recall = 欲しいもの全体のうち実際に返されたものの割合。両方100%にするのは原理的に難しい。
 >
-> **Why it's worth knowing:**
-> AI agent prompts are automatically recorded to JSONL. If you hardcode secrets, anyone with access to that file can see your API credentials. Especially important for skills that run daily via automation.
+> **なぜ知っておくと得か**:
+> AIにニュースを集めさせたり検索を頼むとき、「今は網羅性が大事か、ノイズを減らしたいか」を意識するだけでパラメータ調整の試行回数が減る。昨日の最終形「50件取ってから厳しくスコアリング」はrecall→precisionの二段階戦略で、これが正解パターン。
 >
-> **Action for tomorrow:**
-> Don't write API secrets directly in prompts. Instead say "use the value from .env" — point to where the value lives, don't paste the value itself.
+> **明日から使えるアクション**:
+> AIに検索や収集を頼むとき、先に戦略を宣言する（例: 「まずrecall重視で50件取って、その後precision重視でTop 7に絞って」）
 
-## Installation
+### Day 2: Event Time vs Processing Time
+
+> ### 「いつ起きたか」と「いつ処理したか」は別物
+>
+> **昨日あったこと**:
+> PPPレポートであやみさんの記事（03/18 23:53 JST更新）が翌日のジャーナルに入っていることに気づいた。「なんかズレてるかもです」と指摘して修正を促した場面。
+>
+> **日常例で言うと**:
+> 金曜23:55にピザを注文して、届いたのが土曜0:05。お店の売上レポートに「金曜の注文」と書くか「土曜の注文」と書くかで数字が変わる。どちらが正しいかはルール次第で、ルールが曖昧だとズレが起きる。
+>
+> **エンジニアはこう呼ぶ**:
+> **Event Time vs Processing Time** — イベントが実際に発生した時刻（event time）と、システムがそれを処理・記録した時刻（processing time）の区別。データパイプライン、ログ管理、ストリーム処理で必ず出てくる概念。
+>
+> **なぜ知っておくと得か**:
+> newssense、finance-cli、voice-inboxなど、プロジェクトはすべて「いつのデータか」を扱う。AIに「日次レポートを作って」と頼むとき、event timeとprocessing timeのどちらで集計するか指定できると、昨日のようなズレを未然に防げる。
+>
+> **明日から使えるアクション**:
+> 日付で集計するプロンプトを書くとき、「いつ起きたか（event time）で集計して」と一言添える。
+
+### Day 3: Secrets Management
+
+> ### 設定値と秘密情報は別モノ
+>
+> **昨日あったこと**:
+> newssenseのX API認証用に、CLIENT_IDとCLIENT_SECRETをプロンプトに直書きして.zshrcに追記を指示した。この値はセッションログ（~/.claude/projects/のJSONLファイル）に平文のまま永久に残る。
+>
+> **日常例で言うと**:
+> 家の住所は人に教えても大丈夫。でも鍵の暗証番号を紙に書いて玄関のポストに貼ったら、通りがかりの誰でも家に入れてしまう。設定値にも「見られてOKなもの」と「見られたらまずいもの」がある。
+>
+> **エンジニアはこう呼ぶ**:
+> Secrets management（シークレット管理）。CLIENT_IDは「住所」に近い準公開情報、CLIENT_SECRETは「鍵」にあたる秘密情報。エンジニアは秘密情報をKeychain・Vault・.envファイル（gitignore対象）に入れ、ログやチャット履歴には絶対に残さない。
+>
+> **なぜ知っておくと得か**:
+> AIエージェントへのプロンプトは自動でJSONLに記録される。秘密情報を直書きすると、そのファイルにアクセスできる人全員にAPI認証が丸見えになる。特にautorunで毎日動くスキルほど、この区別が重要。
+>
+> **明日から使えるアクション**:
+> API秘密情報をプロンプトに直接書かず、「.envに既にある値を使って」と伝える。値そのものではなく、値の置き場所を指示する。
+
+## Jaggedness Map
+
+> AIモデルは「同時に超優秀な博士課程の学生であり10歳児でもある」(Andrej Karpathy)。
+> 人間のプロンプト能力も同じようにジャギッド（凸凹）。この機能は taught.jsonl の蓄積から、あなた個人の強み/弱みマップを自動構築します。
+
+### 実例: 作者のマップ（3日間・56プロンプトから生成）
+
+```
+Strong (自信を持って正確にプロンプトできている領域)
+├── マルチエージェントオーケストレーション
+│   Cockpit master → Codex adversarial review → plan review → 実装
+│   という高度な委任チェーンを一貫して正確に指示している
+├── アーキテクチャ委任
+│   voice-inbox-daemon v0.0.2の仕様書、newssense v4のスキーマ設計など
+│   制約条件・スコープ・期待する成果物を明確に指定できている
+└── レビュー/QAワークフロー
+    「codex review challenge して修正してから実装をデリゲートして」
+    レビュー→修正→実装の順序を自然に組み立てている
+
+Weak (レッスンが集中した領域)
+├── 暗黙の参照 (2 lessons)
+│   「なんかズレてるかもです」「1, 2, 3, 4を投稿したい」
+│   文脈や対象を省略しがち。AIには「何が」ズレているか分からない
+├── データ/時間の概念 (2 lessons)
+│   event time vs processing time の混同、precision vs recall の直感的探索
+│   データ処理の基礎概念にギャップがある
+└── セキュリティ意識 (1 lesson)
+    API秘密情報をプロンプトに直書き → セッションログに永久記録
+
+Improving (レッスン後に行動変化が確認された領域)
+└── セキュリティ意識
+    secrets managementレッスン後、.envファイル経由の指示に切り替えた
+
+Stats: 3 lessons | 0 "no lesson" days | Trend: 初期データ収集中
+```
+
+7日分以上のデータが溜まると、週次でジャーナルにマップが自動追記されます。
+
+## インストール
 
 ```bash
 claude install-skill KaishuShito/prompt-mirror
 ```
 
-## Setup
+## セットアップ
 
-After installing, edit `config.json` in the skill directory to match your environment:
+インストール後、スキルディレクトリの `config.json` を自分の環境に合わせて編集:
 
 ```json
 {
@@ -58,30 +136,31 @@ After installing, edit `config.json` in the skill directory to match your enviro
 }
 ```
 
-| Field | Description | Default |
-|-------|-------------|---------|
-| `journal_dir` | Where daily journal markdown files live | `~/Documents/Journal` |
-| `projects_dir` | Claude Code session JSONL directory | `~/.claude/projects` |
-| `codex_dir` | Codex CLI session directory (optional) | `~/.codex` |
-| `timezone` | Your timezone for date boundaries | `Asia/Tokyo` |
-| `hour_cutoff` | Before this hour, treat as "yesterday" | `6` |
+| フィールド | 説明 | デフォルト |
+|-----------|------|-----------|
+| `journal_dir` | 日次ジャーナルの保存先 | `~/Documents/Journal` |
+| `projects_dir` | Claude Code セッション JSONL のディレクトリ | `~/.claude/projects` |
+| `codex_dir` | Codex CLI セッションディレクトリ（任意） | `~/.codex` |
+| `timezone` | 日付境界のタイムゾーン | `Asia/Tokyo` |
+| `hour_cutoff` | この時刻より前は「昨日」扱い | `6` |
 
-## Usage
+## 使い方
 
-### Manual
+### 手動
 
-In Claude Code, type:
+Claude Code で:
 
 ```
 /prompt-mirror
 ```
 
-### Scheduled (Recommended)
+### 定期実行（推奨）
 
-This skill is designed to run automatically each morning. Set up a recurring schedule using one of:
+このスキルは毎朝の自動実行を前提に設計されています。以下のいずれかで設定:
 
-**Claude Desktop — Projects (Recommended)**
-Add this skill to a Claude Desktop Project and configure a daily prompt schedule. Claude Desktop's built-in scheduling runs Prompt Mirror each morning automatically.
+**Claude Desktop — Projects（推奨）**
+
+Claude Desktop の Projects 機能でこのスキルを追加し、日次スケジュールを設定。Claude Desktop の組み込みスケジューリングで毎朝自動実行されます。
 
 **AGI Cockpit autorun**
 ```bash
@@ -96,61 +175,64 @@ Add this skill to a Claude Desktop Project and configure a daily prompt schedule
 **Cron + Claude Code CLI**
 ```bash
 # crontab -e
-0 7 * * * cd ~/your-project && claude -p "Run /prompt-mirror"
+0 7 * * * cd ~/your-project && claude -p "/prompt-mirror"
 ```
 
-The morning schedule matters — Prompt Mirror reads *yesterday's* prompts, so running it before you start today's work means the lesson is fresh context for the day ahead.
+朝に実行する理由 — Prompt Mirror は*昨日*のプロンプトを読むので、今日の作業を始める前にレッスンを受けると、その日のプロンプティングに活かせます。
 
-## Skill Architecture
+## スキル構成
 
 ```
 prompt-mirror/
-├── SKILL.md              # Core skill instructions
-├── config.json           # User configuration
-├── gotchas.md            # Failure patterns and edge cases
+├── SKILL.md                    # スキル本体の指示
+├── config.json                 # ユーザー設定
+├── gotchas.md                  # 実運用で見つかった失敗パターン
 ├── scripts/
-│   └── extract_prompts.py  # Session JSONL → prompt extraction
+│   └── extract_prompts.py      # セッション JSONL → プロンプト抽出
 ├── templates/
-│   └── lesson.md         # Lesson output format template
+│   ├── lesson.md               # レッスン出力テンプレート
+│   └── jaggedness-map.md       # Jaggedness Map出力テンプレート
 └── data/
-    └── taught.jsonl      # Memory: topics already taught (auto-generated)
+    ├── taught.jsonl            # 記憶: 教えたトピック（自動生成）
+    └── jaggedness-map.json     # 強み/弱みマップ（自動生成）
 ```
 
-Following the [progressive disclosure pattern](https://x.com/trq212/article/2033949937936085378) from Anthropic's skill design guidelines — `SKILL.md` is the entry point, and Claude reads supporting files (`gotchas.md`, `templates/`) only when needed.
+Anthropic の [スキル設計ガイドライン](https://x.com/trq212/article/2033949937936085378) に従い、progressive disclosure パターンを採用。`SKILL.md` がエントリーポイントで、Claude は必要に応じて `gotchas.md` や `templates/` を読みます。
 
-### Key Design Decisions
+### 設計判断
 
-- **One lesson per day** — More than one won't get read. Quality over quantity
-- **Everyday analogy first** — Never lead with technical jargon. The analogy is the hook
-- **taught.jsonl as memory** — Prevents repeating topics and tracks concept progression over time
-- **Standalone extractor** — `extract_prompts.py` works independently, no external dependencies
-- **No code in lessons** — The target user doesn't write code. Concepts only
+- **1日1レッスン** — 複数あっても読まれない。量より質
+- **日常例が先** — 技術用語から入らない。アナロジーがフック
+- **taught.jsonl が記憶** — 同じトピックの繰り返しを防ぎ、概念の深度が時間とともに上がる
+- **独立した抽出スクリプト** — `extract_prompts.py` は外部依存なしで単体動作
+- **レッスンにコードなし** — ユーザーはコードを書かない。概念だけで説明する
+- **Jaggedness Map** — 7レッスン以上で自動生成。プロンプト能力の凸凹を可視化
 
-## Customization
+## カスタマイズ
 
-### Language
+### 言語
 
-The skill defaults to the language used in your prompts. Edit `templates/lesson.md` to set a specific output language.
+デフォルトではプロンプトで使われている言語に合わせます。`templates/lesson.md` を編集して出力言語を固定できます。
 
-### Journal Format
+### ジャーナル形式
 
-By default, lessons append to `YYYY-MM-DD.md` files as a `## Prompt Mirror` section. Modify `templates/lesson.md` to match your journal structure.
+デフォルトでは `YYYY-MM-DD.md` ファイルに `## Prompt Mirror` セクションとして追記。`templates/lesson.md` を自分のジャーナル構造に合わせて変更可能。
 
-### Concept Depth
+### 概念の深度
 
-The skill automatically increases concept complexity over time based on `data/taught.jsonl` entry count. Early lessons cover basics (stateless vs stateful); later ones progress to more nuanced topics (event-driven vs polling).
+`data/taught.jsonl` のエントリ数に応じて自動的に概念の複雑さが上がります。初期は基礎（stateless vs stateful）、蓄積が増えるとより高度なトピック（event-driven vs polling）へ進行。
 
-## How It Works Under the Hood
+## 仕組み
 
-The `scripts/extract_prompts.py` script walks `~/.claude/projects/` JSONL session files, filters by JST date, and extracts user messages while skipping:
-- System reminders and command invocations
-- Messages shorter than 30 characters
-- Sub-agent (delegated) sessions
+`scripts/extract_prompts.py` が `~/.claude/projects/` の JSONL セッションファイルを走査し、JST 日付でフィルタし、以下をスキップしながらユーザーメッセージを抽出:
+- システムリマインダーとコマンド呼び出し
+- 30文字未満のメッセージ
+- サブエージェント（委任）セッション
 
-Claude then analyzes the extracted prompts using the concept lens guidelines in `SKILL.md`, cross-references `data/taught.jsonl` for duplicates, and writes the lesson.
+Claude が抽出されたプロンプトを `SKILL.md` のコンセプトレンズで分析し、`data/taught.jsonl` で重複チェックし、レッスンを書きます。
 
-## Credits
+## クレジット
 
-Built by [@KaishuShito](https://github.com/KaishuShito) with Claude Code.
+[@KaishuShito](https://github.com/KaishuShito) が Claude Code で構築。
 
-Inspired by the skill design patterns from [Lessons from Building Claude Code: How We Use Skills](https://x.com/trq212/article/2033949937936085378).
+Anthropic の [Lessons from Building Claude Code: How We Use Skills](https://x.com/trq212/article/2033949937936085378) のスキル設計パターンと、Andrej Karpathy の [Jaggedness（凸凹性）の概念](https://www.youtube.com/watch?v=example) にインスパイアされました。
